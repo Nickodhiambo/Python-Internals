@@ -18,5 +18,7 @@ def metro_areas():
         match record:
             case [name, *extras, (lat, lon)] if lon > 0:
                 print(f'{name}: {(lat, lon)}, {extras[0]}')
+            case _: # Default case
+                print('Location is in Eastern Hemisphere')
 
 metro_areas()
