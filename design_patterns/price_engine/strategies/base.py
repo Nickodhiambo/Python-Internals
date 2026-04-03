@@ -6,7 +6,7 @@ duration add-ons
 
 Constitutes 3 base startegies
 """
-from data.data import RideRequest
+from data import RideRequest
 def economy_fare(ride: RideRequest) -> float:
     """ KES 50 + KES 30/KM + KES 2/MIN"""
     return 50 + ride.distance_km*30 + ride.duration_min*2

@@ -5,7 +5,7 @@ Provides surge strategies which compute price based on surge
 Surge strategies do not take into account vehicle tier
 They take ride information and return a multiplier
 """
-from data.data import RideRequest
+from data import RideRequest
 
 def no_surge(ride: RideRequest) -> float:
     return 1.0

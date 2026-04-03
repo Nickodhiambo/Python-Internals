@@ -4,7 +4,7 @@ Provides discount strategies which are applied after base and surge to determine
 Take a ride request and price and applies discount if any
 """
 
-from data.data import RideRequest
+from data import RideRequest
 
 def no_discount(ride: RideRequest, price: float) -> float:
     return price

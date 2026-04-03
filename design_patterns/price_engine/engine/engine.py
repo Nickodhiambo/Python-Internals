@@ -4,7 +4,7 @@
 Takes an assembled strategy and computes price
 """
 from typing import Callable
-from data.data import RideRequest
+from data import RideRequest
 
 # Type aliases for strategies
 BaseStrategy = Callable[[RideRequest], float]
