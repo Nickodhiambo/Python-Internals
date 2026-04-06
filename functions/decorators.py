@@ -1,7 +1,9 @@
 #!/usr/bin/env python
 import time
+from functools import wraps
 
 def logged(func):
+    @wraps(func)
     def wrapper(*args, **kwargs):
         print(f'[LOG] {func.__name__} takes {args} {kwargs}')
         result = func(*args, **kwargs)
@@ -11,6 +13,7 @@ def logged(func):
 
 
 def timed(func):
+    @wraps(func)
     def wrapper(*args, **kwargs):
         start = time.time()
         result = func(*args, **kwargs)
@@ -20,6 +23,7 @@ def timed(func):
     return wrapper
 
 def validated(func):
+    @wraps(func)
     def wrapper(name, *args, **kwargs):
         if not isinstance(name, str) and not name.strip():
             # Name should be a non empty string
