@@ -18,11 +18,15 @@ class TextEditor:
         inserts a string of text into editor
         """
         self._content += text
-        print(f'Content: {self._content}')
 
     def delete(self, n_chars: int):
         """
         Deletes n_chars number of char from content
         """
         self._content = self._content[:-n_chars]
-        print(f'Content: {self._content}')
+
+    def show(self):
+        """
+        Displays the result of an action
+        """
+        print(f'{self._content}')
