@@ -10,11 +10,11 @@ from editor import TextEditor
 
 class InsertCommand:
     def __init__(self, editor: TextEditor, text: str):
-        self.editor = TextEditor()
+        self.editor = editor
         self.text = text
 
     def execute(self):
-        self.editor.insert(text)
+        self.editor.insert(self.text)
 
     def undo(self):
         self.editor.delete(len(self.text))
@@ -22,7 +22,7 @@ class InsertCommand:
 
 class DeleteCommand:
     def __init__(self, editor: TextEditor, n_chars: int):
-        self.editor = TextEditor()
+        self.editor = editor
         self.n_chars = n_chars
         self.deleted_text = ''
 
