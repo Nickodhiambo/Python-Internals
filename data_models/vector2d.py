@@ -24,8 +24,16 @@ import math
 
 class Vector:
     def __init__(self, x = 0, y = 0):
-        self.x = float(x)
-        self.y = float(y)
+        self.__x = float(x)
+        self.__y = float(y)
+
+    @property
+    def x(self):
+        return self.__x
+
+    @property
+    def y(self):
+        return self.__y
 
     def __add__(self, other):
         x = self.x + other.x
@@ -50,6 +58,9 @@ class Vector:
 
     def __eq__(self, other):
         return tuple(self) == tuple(other)
+
+    def __hash__(self):
+        return hash((self.x, self.y))
 
     def __repr__(self):
         class_name = type(self).__name__
