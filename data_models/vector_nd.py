@@ -35,3 +35,15 @@ class Vector:
 
     def __bool__(self):
         return bool(abs(self))
+
+    # Methods to make vector w sequence
+    def __len__(self):
+        return len(self._components)
+
+    def __getitem__(self, key):
+        if isinstance(key, slice):
+            cls = type(self)
+            return cls(self._components[key])
+        import operator
+        index = operator.index(key)
+        return self._components[index]
