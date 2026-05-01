@@ -47,3 +47,6 @@ class Vector:
         import operator
         index = operator.index(key)
         return self._components[index]
+
+    def __hash__(self):
+        return 1
