@@ -9,6 +9,8 @@ import math
 import reprlib
 from array import array
 from typing import Iterable
+from functools import reduce
+import operator
 
 class Vector:
     typecode = 'd'
@@ -28,7 +30,12 @@ class Vector:
         return str(tuple(self))
 
     def __eq__(self, other):
-        return tuple(self) == tuple(other)
+        return len(self) == len(other) and\
+                all(a == b for a, b in zip(self, other))
+
+    def __hash__(self):
+        hashes = map(hash, self._components)
+        return reduce(operator.xor, hashes, 0)
 
     def abs(self):
         return math.hypot(*self)
@@ -36,7 +43,7 @@ class Vector:
     def __bool__(self):
         return bool(abs(self))
 
-    # Methods to make vector w sequence
+    # Methods to make vector a sequence
     def __len__(self):
         return len(self._components)
 
@@ -47,6 +54,3 @@ class Vector:
         import operator
         index = operator.index(key)
         return self._components[index]
-
-    def __hash__(self):
-        return 1
