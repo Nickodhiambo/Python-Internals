@@ -11,6 +11,7 @@ from array import array
 from typing import Iterable
 from functools import reduce
 import operator
+import itertools
 
 class Vector:
     typecode = 'd'
@@ -62,3 +63,10 @@ class Vector:
 
     def __pos__(self):
         return Vector(self)
+
+    # Infix
+    def __add__(self, other):
+        pairs = itertools.zip_longest(
+                self, other, fillvalue=0.0
+                )
+        return Vector(a+b for a,b in pairs)
