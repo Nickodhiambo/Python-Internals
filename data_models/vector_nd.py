@@ -54,3 +54,11 @@ class Vector:
         import operator
         index = operator.index(key)
         return self._components[index]
+
+    # Implement operators
+    # Unary
+    def __neg__(self):
+        return Vector(-x for x in self)
+
+    def __pos__(self):
+        return Vector(self)
