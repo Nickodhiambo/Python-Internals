@@ -66,7 +66,13 @@ class Vector:
 
     # Infix
     def __add__(self, other):
-        pairs = itertools.zip_longest(
+        try:
+            pairs = itertools.zip_longest(
                 self, other, fillvalue=0.0
                 )
-        return Vector(a+b for a,b in pairs)
+            return Vector(a+b for a,b in pairs)
+        except TypeError:
+            return NotImplemented
+
+    def __radd__(self, other):
+        return self + other
