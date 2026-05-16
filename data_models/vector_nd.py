@@ -12,6 +12,7 @@ from typing import Iterable
 from functools import reduce
 import operator
 import itertools
+from collections import abc
 
 class Vector:
     typecode = 'd'
@@ -77,6 +78,7 @@ class Vector:
     def __radd__(self, other):
         return self + other
 
+    # Implement scalar multiplication
     def __mul__(self, scalar):
         try:
             factor = float(scalar)
@@ -86,3 +88,18 @@ class Vector:
 
     def __rmul__(self, scalar):
         return self * scalar
+
+    # Implement matrix multiplication
+    def __matmul__(self, other):
+        if isinstance(other, abc.Sized) and\
+                isinstance(other, abc.Iterable):
+                    if len(self) == len(other):
+                        return sum(a*b for a,b in zip(self, other))
+                    else:
+                        raise ValueError(
+                                '@ requires vectors of equal length')
+        else:
+            return NotImplemented
+
+    def __rmatmul__(self, other):
+        return self @ other
