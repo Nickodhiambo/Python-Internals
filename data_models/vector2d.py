@@ -62,6 +62,9 @@ class Vector:
     def __hash__(self):
         return hash((self.x, self.y))
 
+    def __len__(self):
+        return 2
+
     def __repr__(self):
         class_name = type(self).__name__
         return '{}({!r},{!r})'.format(class_name, *self)

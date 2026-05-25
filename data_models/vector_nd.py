@@ -32,14 +32,17 @@ class Vector:
         return str(tuple(self))
 
     def __eq__(self, other):
-        return len(self) == len(other) and\
-                all(a == b for a, b in zip(self, other))
+        if isinstance(other, Vector):
+            return len(self) == len(other) and\
+                    all(a == b for a, b in zip(self, other))
+        else:
+            return NotImplemented
 
     def __hash__(self):
         hashes = map(hash, self._components)
         return reduce(operator.xor, hashes, 0)
 
-    def abs(self):
+    def __abs__(self):
         return math.hypot(*self)
 
     def __bool__(self):
