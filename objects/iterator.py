@@ -7,10 +7,9 @@ item at a time from a collection, works by implementing two
 mechanisms; an iterator and an iterable.
 
 Python implements the two mechanisms separately. The 
-iterator mechanism holds or avails a colletion's list of items for the iterator mechanism to act on
+iterable  mechanism holds or avails a colletion's list of items for the iterator mechanism to act on
 
-The iterable avails the iterator mechanism that keeps track of the current item in the collection, how to access the
-next item, and when the collection is exhausted.
+The iterator mechanism keeps track of the current item in the collection, how to access the next item, and when the collection is exhausted.
 
 The iterable just avails the collection's data.It does not keep track of which item is under processing, or whether the collection is exhausted. The iterator on the other hand
 maintains the traversal state.
