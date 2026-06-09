@@ -26,26 +26,28 @@ class Sentence:
 
     # Implement iterable protocol
     def __iter__(self):
-        return SentenceIterator(self.words)
+        # return SentenceIterator(self.words)
+        for word in self.words:
+            yield word
 
     def __repr__(self):
         return f'Sentence({reprlib.repr(self.text)})'
 
-class SentenceIterator:
-    """
-    Implements the Iterator Design Pattern
-    """
-    def __init__(self, words):
-        self.words = words
-        self.index  = 0
+#class SentenceIterator:
+   # """
+    #Implements the Iterator Design Pattern
+   # """
+    #def __init__(self, words):
+        #self.words = words
+        #self.index  = 0
 
-    def __iter__(self):
-        return self
+    #def __iter__(self):
+        #return self
 
-    def __next__(self):
-        try:
-            word = self.words[index]
-        except IndexError:
-            StopIteration()
-        self.index += 1
-        return word
+    #def __next__(self):
+        #try:
+            #word = self.words[index]
+        #except IndexError:
+            #StopIteration()
+        #self.index += 1
+        #return word
