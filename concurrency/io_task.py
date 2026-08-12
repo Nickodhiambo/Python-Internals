@@ -11,10 +11,10 @@ import requests
 import threading
 import time
 
-urls = ['www.google.com',
-        'smis.uonbi.ac.ke',
+urls = ['https://www.google.com',
+        'https://smis.uonbi.ac.ke',
         'https://github.com',
-        'www.amazon.com',
+        'https://www.amazon.com',
         ]
 
 def fetch(url):
