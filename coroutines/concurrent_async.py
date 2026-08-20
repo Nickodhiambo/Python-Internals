@@ -21,5 +21,8 @@ async def main():
             )
     print(results)
 start = time.time()
+# Create the event loop
+# Run all coroutines passed into event loop
+# Closes loop
 asyncio.run(main())
 print(f'time taken: {time.time() - start:.2f}s')
