@@ -14,15 +14,24 @@ async def fetch(url: str, session) -> dict:
     print(f'Fetching {url}')
     # We wrap the http request session inside a
     # context manager to automate set up and tear down
-    async with session.get(url) as response:
-        if response:
+    try:
+        async with session.get(url) as response:
+            if response.status != 200:
+                print(f'Error: HTTP {response.status} for {url}')
+                return None
             try:
                 data = await response.json()
                 return data
-            except:
-                print('Error: Failed to parse JSON')
-        else:
-            print('Error: Failed to fetch')
+            except aiohttp.ContentTypeError:
+                print(f'response from {url} is not valid JSON')
+                return None
+    # Handle network level errors
+    except aiohttp.ClientConnectionError:
+        print(f'Could not connect to {url}')
+        None
+    except asyncio.TimeoutError:
+        print (f'Request to {url} is timed out')
+        None
 
 async def main():
     urls = ['https://jsonplaceholder.typicode.com/users/1',
