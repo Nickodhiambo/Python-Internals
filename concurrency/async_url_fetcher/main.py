@@ -28,25 +28,36 @@ async def fetch(url: str, session) -> dict:
     # Handle network level errors
     except aiohttp.ClientConnectionError:
         print(f'Could not connect to {url}')
-        None
+        return None
     except asyncio.TimeoutError:
         print (f'Request to {url} is timed out')
-        None
+        return None
 
 async def main():
     urls = ['https://jsonplaceholder.typicode.com/users/1',
             # Will raise Json parse
             'https://www.google.com',
             ]
+    # Set a timeout so requests don't hang indefinitely
+    to = aiohttp.ClientTimeout(total=10) # maximum 10 seconds
     # Fetch several urls concurrently
-    async with aiohttp.ClientSession() as session:
+    async with aiohttp.ClientSession(timeout=to) as session:
         # Coroutine object for every request is stored
         # in tasks
         tasks = [fetch(url, session) for url in urls]
         # Event loop automatically schedules and executes
         # all the coroutine objects concurrently
         results = await asyncio.gather(*tasks)
-    for result in results:
+    
+    successful = [r for r in results if r is not None]
+    failed_count = len(results) - len(successful)
+
+    print(f'fetched {len(successful)} of {len(results)}')
+
+    if failed_count:
+        print(f'{failed_count} requests failed')
+
+    for result in successful:
         print(result)
 
 asyncio.run(main())
