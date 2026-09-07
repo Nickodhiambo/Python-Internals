@@ -33,31 +33,56 @@ async def fetch(url: str, session) -> dict:
         print (f'Request to {url} is timed out')
         return None
 
+BASE_URL = 'https://jsonplaceholder.typicode.com'
+
+async def fetch_user_with_posts(
+        user_id: int, session: aiohttp.ClientSession)-> dict | None:
+    """Fetches a user, uses user id to build post url then fecthes the user's post"""
+    user = await fetch(
+            f'{BASE_URL}/users/{user_id}', session)
+
+    #No need to fetch posts if user is None
+    if user is None:
+        return None
+    
+    # Now fetch posts
+    posts = await fetch(
+            f'{BASE_URL}/posts?userId={user["id"]}', session)
+
+    if not posts:
+        return None
+
+    # Return a dict combining user with posts information
+    return {
+            'id': user['id'],
+            'name': user['name'],
+            'email': user['email'],
+            'post_count': len(posts),
+            'posts': [p['title'] for p in posts]
+            }
+
 async def main():
-    urls = ['https://jsonplaceholder.typicode.com/users/1',
-            # Will raise Json parse
-            'https://www.google.com',
-            ]
+    user_ids = [1,2,3]
     # Set a timeout so requests don't hang indefinitely
     to = aiohttp.ClientTimeout(total=10) # maximum 10 seconds
     # Fetch several urls concurrently
     async with aiohttp.ClientSession(timeout=to) as session:
         # Coroutine object for every request is stored
         # in tasks
-        tasks = [fetch(url, session) for url in urls]
+        tasks = [fetch_user_with_posts(
+            user_id, session) for user_id in user_ids]
         # Event loop automatically schedules and executes
         # all the coroutine objects concurrently
         results = await asyncio.gather(*tasks)
     
     successful = [r for r in results if r is not None]
-    failed_count = len(results) - len(successful)
 
-    print(f'fetched {len(successful)} of {len(results)}')
-
-    if failed_count:
-        print(f'{failed_count} requests failed')
-
-    for result in successful:
-        print(result)
+    for user in successful:
+        print(f" {'*' * 40}")
+        print(f"Name: {user['name']}")
+        print(f"Email: {user['email']}")
+        print(f"Number of posts: {user['post_count']}")
+        for post in user['posts']:
+            print(post)
 
 asyncio.run(main())
