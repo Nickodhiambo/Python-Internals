@@ -13,6 +13,14 @@ to `requests` library but with async support
 
 import asyncio
 import aiohttp
+import time
+
+# Implement rate limiting.
+# Only a set number of coroutines to execute at a time
+# Asyncio provides a primitive for that
+# We implement at module level them inject into coroutines
+
+semaphore = asyncio.Semaphore(3) # Only 3 at a time
 
 # Implement a coroutine to act as a generic fetcher
 async def fetcher(
@@ -31,38 +39,42 @@ async def fetcher(
     print(f'Fetching {url}')
 
     # Try establishing a connection with server
-    try:
-       async with session.get(url) as response:
-            # if we get a response...
-            if response.status == 200:
-                try:
-                    data = await response.json()
-                    return data
-                except aiohttp.ContentTypeError:
-                    print('Response is not valid JSON')
-                    return None
-            else: 
-                # Connection was established but we have a
-                # HTTP (status 4XX and 5XX)
-                print(f'Error: HTTP {response.status} for {url}')
-                return None
-    # If connection is not successful, handle network
-    # level errors
-    except aiohttp.ClientConnectionError:
-        # Client/server is offline,
-        # url is incorrect or broken
-        # server is unavailable
-        print('Connection error: {url} failed to connect')
-        return None
-    except asyncio.TimeoutError:
-        # Slow network
-        print(f'Connection Error: {url} is taking too long')
-        return None
+    async with semaphore:
+        try:
+            async with session.get(url) as response:
+                # if we get a response...
+                if response.status == 200:
+                    try:
+                        data = await response.json()
+                        return data
+                    except aiohttp.ContentTypeError:
+                        print('Response is not valid JSON')
+                        return None
 
-    except aiohttp.InvalidUrlClientError:
-        # Handle invalid URL
-        print(f'Invalid url for {url}')
-        return None
+                else: 
+                    #Connection was established but we have
+                    # HTTP error (status 4XX and 5XX)
+                    print(f'Error: HTTP {response.status} for {url}')
+                    return None
+
+        # If connection is not successful, handle network
+        # level errors
+        except aiohttp.ClientConnectionError:
+            # Client/server is offline,
+            # url is incorrect or broken
+            # server is unavailable
+            print('Connection error: {url} failed to connect')
+            return None
+
+        except asyncio.TimeoutError:
+            # Slow network
+            print(f'Connection Error: {url} is taking too long')
+            return None
+
+        except aiohttp.InvalidUrlClientError:
+            # Handle invalid URL
+            print(f'Invalid url for {url}')
+            return None
 
 BASE_URL = 'https://jsonplaceholder.typicode.com'
 
@@ -92,14 +104,16 @@ async def main():
     to = aiohttp.ClientTimeout(total=10) # 10s
 
     # Create a HTTP session for fetcher and start event loop
-    async with aiohttp.ClientSession() as session:
+    async with aiohttp.ClientSession(timeout=to) as session:
         # Calling fetcher returns coroutine objects
+        start = time.time()
         coro_tasks = [
                 fetch_user_with_posts(
                     user_id, session) for user_id in user_ids
                 ]
         # Run the coroutines concurrently with event loop
         results = await asyncio.gather(*coro_tasks)
+        print(f'duration: {time.time() - start:.2f}s')
 
     # Filter out unsuccessful tasks
     successful = [r for r in results if r is not None]
